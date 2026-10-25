@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BMI 计算器 · bmi-calculator</title>
+  <meta name="description" content="纯静态 BMI 计算器：计算 BMI 与健康体重区间，记录历史曲线，设定目标体重，数据仅保存在本地浏览器。" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%E2%9A%96%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="wrap">
+      <h1>⚖️ BMI 计算器</h1>
+      <p class="subtitle">输入身高体重，实时计算 BMI 与健康体重区间；记录历史变化曲线，设定并追踪目标体重。所有数据仅保存在你自己的浏览器（localStorage）中。</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="grid">
+      <!-- 测量录入 -->
+      <section class="card" id="input-card">
+        <h2>录入测量</h2>
+        <form id="record-form" novalidate>
+          <div class="field-row">
+            <label class="field">
+              <span class="lab">身高 · cm</span>
+              <input type="number" id="height" min="40" max="260" step="0.1" placeholder="例如 172" required />
+            </label>
+            <label class="field">
+              <span class="lab">体重 · kg</span>
+              <input type="number" id="weight" min="10" max="400" step="0.1" placeholder="例如 65.5" required />
+            </label>
+            <label class="field">
+              <span class="lab">日期</span>
+              <input type="date" id="date" required />
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn primary" id="add-btn">保存记录</button>
+            <button type="button" class="btn ghost" id="clear-input-btn">清空输入</button>
+          </div>
+          <p class="hint">同一日期重复保存会更新该日记录。</p>
+        </form>
+      </section>
+
+      <!-- 计算结果 -->
+      <section class="card" id="result-card">
+        <h2>计算结果</h2>
+        <div id="result-body" aria-live="polite"></div>
+      </section>
+
+      <!-- 目标体重 -->
+      <section class="card" id="target-card">
+        <h2>目标体重</h2>
+        <form id="target-form">
+          <label class="field">
+            <span class="lab">目标体重 · kg</span>
+            <input type="number" id="target-weight" min="10" max="400" step="0.1" placeholder="例如 65" />
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="btn primary sm">保存目标</button>
+            <button type="button" class="btn ghost sm" id="target-clear" hidden>清除目标</button>
+          </div>
+        </form>
+        <div id="target-progress"></div>
+      </section>
+    </section>
+
+    <!-- 历史曲线 -->
+    <section class="card" id="chart-card">
+      <div class="card-head">
+        <h2>历史曲线</h2>
+        <div class="seg" role="group" aria-label="切换曲线类型">
+          <button type="button" class="seg-btn active" data-mode="bmi">BMI 曲线</button>
+          <button type="button" class="seg-btn" data-mode="weight">体重曲线</button>
+        </div>
+      </div>
+      <div id="chart"></div>
+    </section>
+
+    <!-- 历史记录 -->
+    <section class="card" id="history-card">
+      <div class="card-head">
+        <h2>历史记录<span class="count" id="record-count"></span></h2>
+        <div class="card-actions">
+          <button type="button" id="export-btn" class="btn ghost sm">导出 JSON</button>
+          <button type="button" id="import-btn" class="btn ghost sm">导入 JSON</button>
+          <button type="button" id="clear-data-btn" class="btn danger sm">清空数据</button>
+          <input type="file" id="import-file" accept=".json,application/json" hidden />
+        </div>
+      </div>
+      <div id="history"></div>
+    </section>
+  </main>
+
+  <footer class="app-footer wrap">
+    <p>纯静态页面 · 无构建 · 无后端 · 数据仅存于本机浏览器 localStorage · BMI 判定采用中国成人标准（18.5 / 24 / 28）</p>
+  </footer>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
